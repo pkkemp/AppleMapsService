@@ -41,7 +41,7 @@ func GenerateMapsToken(w http.ResponseWriter, r *http.Request) {
 	claims.IssuedAt = time.Now().Unix()
 	claims.Issuer = "6G53WHVXA8"
 
-	claims.Origin = "http://localhost:8000"
+	claims.Origin = "https://wp.freemomhugs.org"
 	claims.ExpiresAt = time.Now().Add(30 * time.Minute).Unix()
 
 	// Get the JSON body and decode into credentials
