@@ -65,6 +65,7 @@ func GenerateMapsToken(w http.ResponseWriter, r *http.Request) {
 	tokenString, err := token.SignedString(mapsKey)
 	if err != nil {
 		// If there is an error in creating the JWT return an internal server error
+		w.Header().Set("Access-Control-Allow-Origin", "https://wp.freemomhugs.org")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
