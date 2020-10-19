@@ -23,6 +23,7 @@ var rawJwtKey []byte
 var mapsKey *ecdsa.PrivateKey
 
 var mapsKeyID =  "NKP4SK8T5W"
+var WORDPRESS_URL = "https://wp.freemomhugs.org"
 
 
 
@@ -65,7 +66,6 @@ func GenerateMapsToken(w http.ResponseWriter, r *http.Request) {
 	tokenString, err := token.SignedString(mapsKey)
 	if err != nil {
 		// If there is an error in creating the JWT return an internal server error
-		w.Header().Set("Access-Control-Allow-Origin", "https://wp.freemomhugs.org")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -77,6 +77,7 @@ func GenerateMapsToken(w http.ResponseWriter, r *http.Request) {
 		Value:   tokenString,
 		Expires: time.Now().Add(30 * time.Minute),
 	})
+	w.Header().Set("Access-Control-Allow-Origin", WORDPRESS_URL)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(tokenString))
 }
