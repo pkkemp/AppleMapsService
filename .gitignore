@@ -2,6 +2,7 @@
 *.yml
 *.json
 *.p8
+.idea/*
 
 # Binaries for programs and plugins
 *.exe
