@@ -24,7 +24,7 @@
         #map {
             width: 100%;
             max-width: 100%;
-            height: 1000px;
+            height: 800px;
         }
 
         #infoPopup {
@@ -76,6 +76,7 @@
 </head>
 <body>
 <div class="container">
+    <input type="text" id="searchbox"><button type="button" id="myBtn">Click Me!</button>
     <div id="map"></div>
     <div id="infoPopup">
         <div class="info">
@@ -91,40 +92,42 @@
 </div>
 <script>
 
-    var LINE_WIDTH_DEFAULT = 0.5;
-    var LINE_WIDTH_SELECTED = 3;
-    var MAP_COLORS = [
-        {
-            color: "#fcc5c0",
-            range: "< 1M",
-            num: 1000000
-        },
-        {
-            color: "#fa9fb5",
-            range: "1M +",
-            num: 5000000
-        },
-        {
-            color: "#f768a1",
-            range: "5M +",
-            num: 10000000
-        },
-        {
-            color: "#dd3497",
-            range: "10M +",
-            num: 20000000
-        },
-        {
-            color: "#ae017e",
-            range: "20M +",
-            num: 30000000
-        },
-        {
-            color: "#7a0177",
-            range: "> 30M",
-            num: Infinity
-        }
-    ];
+//    var LINE_WIDTH_DEFAULT = 0.5;
+//    var LINE_WIDTH_SELECTED = 3;
+//    var MAP_COLORS = [
+//        {
+//            color: "#fcc5c0",
+//            range: "< 1M",
+//            num: 1000000
+//        },
+//        {
+//            color: "#fa9fb5",
+//            range: "1M +",
+//            num: 5000000
+//        },
+//        {
+//            color: "#f768a1",
+//            range: "5M +",
+//            num: 10000000
+//        },
+//        {
+//            color: "#dd3497",
+//            range: "10M +",
+//            num: 20000000
+//        },
+//        {
+//            color: "#ae017e",
+//            range: "20M +",
+//            num: 30000000
+//        },
+//        {
+//            color: "#7a0177",
+//            range: "> 30M",
+//            num: Infinity
+//        }
+//    ];
+
+
 
     // Initialize mapkit and create a new map.
     mapkit.init({
@@ -137,10 +140,15 @@
             xhr.send();
         }
     });
+    var MarkerAnnotation = mapkit.MarkerAnnotation,
+        clickAnnotation;
+    var sfo = new mapkit.Coordinate(37.616934, -122.383790),
+        work = new mapkit.Coordinate(37.3349, -122.0090201);
+
     var map = new mapkit.Map("map", {
         isRotationEnabled: false,
-        isZoomEnabled: false,
-        showsZoomControl: false
+        isZoomEnabled: true,
+        showsZoomControl: true
     });
 
     // Setup the UI to show a popup when a state is selected.
@@ -149,30 +157,75 @@
     var infoPopulation = infoPopup.querySelector(".info-population");
     var mapLegend = document.querySelector(".map-legend");
 
-    function showInfo(data) {
-        infoCountry.innerText = data.name;
-        infoPopulation.innerText = data.population.toLocaleString();
-        infoPopup.style.display = "block";
-    }
 
-    function closeInfo() {
-        infoPopup.style.display = "none";
-    }
+    // function showInfo(data) {
+    //     infoCountry.innerText = data.name;
+    //     infoPopulation.innerText = data.population.toLocaleString();
+    //     infoPopup.style.display = "block";
+    // }
+    //
+    // function closeInfo() {
+    //     infoPopup.style.display = "none";
+    // }
+    //
+    // function addLegend() {
+    //     var el, textNode;
+    //     MAP_COLORS.forEach(function (mColor) {
+    //         el = document.createElement("div");
+    //         textNode = document.createTextNode(mColor.range);
+    //         el.appendChild(textNode);
+    //         el.style.background = mColor.color;
+    //         mapLegend.appendChild(el);
+    //     });
+    // }
+    //
+    // addLegend();
 
-    function addLegend() {
-        var el, textNode;
-        MAP_COLORS.forEach(function (mColor) {
-            el = document.createElement("div");
-            textNode = document.createTextNode(mColor.range);
-            el.appendChild(textNode);
-            el.style.background = mColor.color;
-            mapLegend.appendChild(el);
+    var geocoder = new mapkit.Geocoder({
+        language: "en-GB",
+        getsUserLocation: false
+    });
+
+    var search = new mapkit.Search({
+        language: "en-GB",
+        getsUserLocation: true,
+        region: map.region
+    });    // Import GeoJSON data with the shape of the states and their population.
+    //var okc;
+    //search.search("73102", function(error, data) { console.log(data); okc = data;});
+    var places;
+
+    document.getElementById("myBtn").addEventListener("click", function() {
+
+        var zip = document.getElementById("searchbox").value;
+        geocoder.lookup(zip, function(error, data) {
+            console.log(data);
+            var loc = data.results[0];
+            map.center = loc.region.center;
+            map.cameraDistance = 250000;
+            //var portland = new mapkit.Coordinate(45.5231, -122.6765);
+            //var chapter = new mapkit.Coordinate(37.616934, -122.383790);
+            var chapter = loc.region.center;
+            // Setting properties after creation:
+            var chapterAnnotation = new MarkerAnnotation(chapter);
+            chapterAnnotation.color = "#969696";
+            chapterAnnotation.title = "Free Mom Hugs";
+            chapterAnnotation.subtitle = "of Oklahoma";
+            chapterAnnotation.selected = "true";
+            chapterAnnotation.glyphText = "";
+            map.showItems(chapterAnnotation);
         });
-    }
+        search.search(zip, function(error, data) {
+            console.log(data);
+            // places = data;
+            // map.center = places.places[0].region.center;
+            // map.cameraDistance = 250000;
+        });
 
-    addLegend();
 
-    // Import GeoJSON data with the shape of the states and their population.
+    });
+
+
     mapkit.importGeoJSON("https://open.freemomhugs.org/chapters/state.json", {
 
         // Some states are represented as MultiPolygons; we transform them into
@@ -213,32 +266,64 @@
 
         // When all the data has been imported, we can show the results.
         geoJSONDidComplete: function(overlays) {
-            map.addItems(overlays);
-            map.showItems(overlays.getFlattenedItemList().filter(function(overlay) {
-                // Focus the map on the continental states at first.
-                var name = overlay.data.name;
-                return name !== "Alaska" && name !== "Hawaii";
-            }), {
-                // Leave some padding for the color key.
-                padding: new mapkit.Padding(0, 0, 0, 67)
-            });
+            //map.addItems(overlays);
+            // map.showItems(overlays.getFlattenedItemList().filter(function(overlay) {
+            //     // Focus the map on the continental states at first.
+            //     var name = overlay.data.name;
+            //     return name !== "Alaska" && name !== "Hawaii";
+            // }), {
+            //     // Leave some padding for the color key.
+            //     padding: new mapkit.Padding(0, 0, 0, 67)
+            // });
         }
     });
 
     // Show info about the selected state.
-    map.addEventListener("select", function(event) {
-        if (event.overlay && event.overlay.data) {
-            event.overlay.style.lineWidth = LINE_WIDTH_SELECTED;
-            showInfo(event.overlay.data);
-        }
-    });
+    // map.addEventListener("select", function(event) {
+    //     if (event.overlay && event.overlay.data) {
+    //         event.overlay.style.lineWidth = LINE_WIDTH_SELECTED;
+    //         showInfo(event.overlay.data);
+    //     }
+    // });
 
     // Hide info when a state is deselected.
-    map.addEventListener("deselect", function(event) {
-        if (event.overlay) {
-            event.overlay.style.lineWidth = LINE_WIDTH_DEFAULT;
-            closeInfo();
+    // map.addEventListener("deselect", function(event) {
+    //     if (event.overlay) {
+    //         event.overlay.style.lineWidth = LINE_WIDTH_DEFAULT;
+    //         closeInfo();
+    //     }
+    // });
+
+    // Setting properties on creation:
+    var sfoAnnotation = new MarkerAnnotation(sfo, { color: "#f4a56d", title: "SFO", glyphText: "✈️" });
+
+    // Setting properties after creation:
+    var workAnnotation = new MarkerAnnotation(work);
+    workAnnotation.color = "#969696";
+    workAnnotation.title = "Work";
+    workAnnotation.subtitle = "Apple Park";
+    workAnnotation.selected = "true";
+    workAnnotation.glyphText = "";
+
+    // Add and show both annotations on the map
+    map.showItems([sfoAnnotation, workAnnotation]);
+
+    // Drop an annotation where a Shift-click is detected:
+    map.element.addEventListener("click", function(event) {
+        if(!event.shiftKey) {
+            return;
         }
+
+        if(clickAnnotation) {
+            map.removeAnnotation(clickAnnotation);
+        }
+
+        var coordinate = map.convertPointOnPageToCoordinate(new DOMPoint(event.pageX, event.pageY));
+        clickAnnotation = new MarkerAnnotation(coordinate, {
+            title: "Click!",
+            color: "#c969e0"
+        });
+        map.addAnnotation(clickAnnotation);
     });
 
 </script>
