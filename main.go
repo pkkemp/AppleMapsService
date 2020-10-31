@@ -23,7 +23,7 @@ var rawJwtKey []byte
 var mapsKey *ecdsa.PrivateKey
 
 var mapsKeyID =  "NKP4SK8T5W"
-var WORDPRESS_URL = "https://wp.freemomhugs.org"
+var WORDPRESS_URL = "http://localhost:8000"
 
 
 
@@ -38,12 +38,28 @@ jwt.StandardClaims
 
 // Create the Signin handler
 func GenerateMapsToken(w http.ResponseWriter, r *http.Request) {
+
+
+	sites, ok := r.URL.Query()["site"]
+
+	if !ok || len(sites[0]) < 1 {
+		w.WriteHeader(http.StatusInternalServerError)
+		log.Println("Url Param 'Site' is missing")
+		return
+	}
+
+	// Query()["key"] will return an array of items,
+	// we only want the single item.
+	site := sites[0]
+
 	var claims Claims
 	claims.IssuedAt = time.Now().Unix()
 	claims.Issuer = "6G53WHVXA8"
 
-	claims.Origin = "https://wp.freemomhugs.org"
+	claims.Origin = site
 	claims.ExpiresAt = time.Now().Add(30 * time.Minute).Unix()
+
+
 
 	// Get the JSON body and decode into credentials
 

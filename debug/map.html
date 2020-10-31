@@ -133,7 +133,7 @@
     mapkit.init({
         authorizationCallback: function(done) {
             var xhr = new XMLHttpRequest();
-            xhr.open("GET", "/maps/jwt");
+            xhr.open("GET", "/maps/jwt?site=http://localhost:8000");
             xhr.addEventListener("load", function() {
                 done(this.responseText);
             });
