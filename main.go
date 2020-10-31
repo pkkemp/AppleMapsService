@@ -93,7 +93,7 @@ func GenerateMapsToken(w http.ResponseWriter, r *http.Request) {
 		Value:   tokenString,
 		Expires: time.Now().Add(30 * time.Minute),
 	})
-	w.Header().Set("Access-Control-Allow-Origin", WORDPRESS_URL)
+	w.Header().Set("Access-Control-Allow-Origin", site)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(tokenString))
 }
