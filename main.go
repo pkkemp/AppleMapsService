@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"os"
 	"log"
+	"strings"
 	"time"
 	"github.com/dgrijalva/jwt-go"
 	"net/http"
@@ -41,6 +42,18 @@ func GenerateMapsToken(w http.ResponseWriter, r *http.Request) {
 	// Query()["key"] will return an array of items,
 	// we only want the single item.
 	site := sites[0]
+
+	//validate if this is a URL we should provide a signed token for
+	URLComponents := strings.Split(site, ".")
+	numComponents := len(URLComponents)
+	if(URLComponents[numComponents-1] != "org" ||
+		(URLComponents[numComponents-2] != "freemomhugs" &&
+			URLComponents[numComponents-2] != "https://freemomhugs" )) {
+		w.WriteHeader(http.StatusInternalServerError)
+		log.Println("Invalid Site")
+		return
+	}
+
 
 	var claims Claims
 	claims.IssuedAt = time.Now().Unix()
