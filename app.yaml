@@ -1,8 +1,9 @@
-runtime: go114  # or go112 or go113 for Go 1.12 or Go 1.13
+runtime: go114
 
 instance_class: B1
 
-#env_variables:
+env_variables:
+    PORT: 8080
 ##  BUCKET_NAME: "example-gcs-bucket"
 
 basic_scaling:
@@ -10,12 +11,5 @@ basic_scaling:
   idle_timeout: 5m
 
 handlers:
-#  - url: /stylesheets
-#    static_dir: stylesheets
-#
-#  - url: /(.*\.(gif|png|jpg))$
-#    static_files: static/\1
-#    upload: static/.*\.(gif|png|jpg)$
-
   - url: /.*
     script: auto
