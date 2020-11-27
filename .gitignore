@@ -3,6 +3,7 @@
 *.json
 *.p8
 /.idea
+*.xml
 
 # Binaries for programs and plugins
 *.exe
