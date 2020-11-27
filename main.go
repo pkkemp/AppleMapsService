@@ -6,6 +6,8 @@ import (
 	"encoding/pem"
 	"fmt"
 	"io/ioutil"
+	"os"
+
 	//"encoding/json"
 	"log"
 	"time"
@@ -22,7 +24,7 @@ import (
 var rawJwtKey []byte
 var mapsKey *ecdsa.PrivateKey
 
-var mapsKeyID =  "NKP4SK8T5W"
+var mapsKeyID =  "F8YD4N54KD"
 var WORDPRESS_URL = "http://localhost:8000"
 
 
@@ -154,7 +156,7 @@ func GenerateMapsToken(w http.ResponseWriter, r *http.Request) {
 //}
 
 func main() {
-	p8bytes, err := ioutil.ReadFile("AuthKey_NKP4SK8T5W.p8")
+	p8bytes, err := ioutil.ReadFile("AuthKey_F8YD4N54KD.p8")
 	if err != nil {
 		log.Println(err)
 		return
@@ -191,5 +193,15 @@ func main() {
 	http.Handle("/", http.FileServer(http.Dir("./debug")))
 
 	// start the server on port 8000
-	log.Fatal(http.ListenAndServe(":8000", nil))
+	//log.Fatal(http.ListenAndServe(":8080", nil))
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+		log.Printf("Defaulting to port %s", port)
+	}
+
+	log.Printf("Listening on port %s", port)
+	if err := http.ListenAndServe(":"+port, nil); err != nil {
+		log.Fatal(err)
+	}
 }

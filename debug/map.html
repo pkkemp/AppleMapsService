@@ -92,40 +92,40 @@
 </div>
 <script>
 
-//    var LINE_WIDTH_DEFAULT = 0.5;
-//    var LINE_WIDTH_SELECTED = 3;
-//    var MAP_COLORS = [
-//        {
-//            color: "#fcc5c0",
-//            range: "< 1M",
-//            num: 1000000
-//        },
-//        {
-//            color: "#fa9fb5",
-//            range: "1M +",
-//            num: 5000000
-//        },
-//        {
-//            color: "#f768a1",
-//            range: "5M +",
-//            num: 10000000
-//        },
-//        {
-//            color: "#dd3497",
-//            range: "10M +",
-//            num: 20000000
-//        },
-//        {
-//            color: "#ae017e",
-//            range: "20M +",
-//            num: 30000000
-//        },
-//        {
-//            color: "#7a0177",
-//            range: "> 30M",
-//            num: Infinity
-//        }
-//    ];
+   var LINE_WIDTH_DEFAULT = 0.5;
+   var LINE_WIDTH_SELECTED = 3;
+   var MAP_COLORS = [
+       {
+           color: "#fcc5c0",
+           range: "< 1M",
+           num: 1000000
+       },
+       {
+           color: "#fa9fb5",
+           range: "1M +",
+           num: 5000000
+       },
+       {
+           color: "#f768a1",
+           range: "5M +",
+           num: 10000000
+       },
+       {
+           color: "#dd3497",
+           range: "10M +",
+           num: 20000000
+       },
+       {
+           color: "#ae017e",
+           range: "20M +",
+           num: 30000000
+       },
+       {
+           color: "#7a0177",
+           range: "> 30M",
+           num: Infinity
+       }
+   ];
 
 
 
@@ -133,7 +133,7 @@
     mapkit.init({
         authorizationCallback: function(done) {
             var xhr = new XMLHttpRequest();
-            xhr.open("GET", "/maps/jwt?site=http://localhost:8000");
+            xhr.open("GET", "https://srv.freemomhugs.org/maps/jwt?site=http://localhost:8000");
             xhr.addEventListener("load", function() {
                 done(this.responseText);
             });

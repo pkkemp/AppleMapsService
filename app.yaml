@@ -1,0 +1,21 @@
+runtime: go114  # or go112 or go113 for Go 1.12 or Go 1.13
+
+instance_class: B1
+
+#env_variables:
+##  BUCKET_NAME: "example-gcs-bucket"
+
+basic_scaling:
+  max_instances: 10
+  idle_timeout: 5m
+
+handlers:
+#  - url: /stylesheets
+#    static_dir: stylesheets
+#
+#  - url: /(.*\.(gif|png|jpg))$
+#    static_files: static/\1
+#    upload: static/.*\.(gif|png|jpg)$
+
+  - url: /.*
+    script: auto
