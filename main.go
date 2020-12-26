@@ -49,7 +49,7 @@ func GenerateMapsToken(w http.ResponseWriter, r *http.Request) {
 	if(URLComponents[numComponents-1] != "org" ||
 		(URLComponents[numComponents-2] != "freemomhugs" &&
 			URLComponents[numComponents-2] != "https://freemomhugs" )) {
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusUnauthorized)
 		log.Println("Invalid Site")
 		return
 	}
@@ -70,7 +70,7 @@ func GenerateMapsToken(w http.ResponseWriter, r *http.Request) {
 	tokenString, err := token.SignedString(mapsKey)
 	if err != nil {
 		// If there is an error in creating the JWT return an internal server error
-		w.WriteHeader(http.StatusUnauthorized)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
