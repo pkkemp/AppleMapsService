@@ -45,7 +45,7 @@ func GenerateMapsToken(w http.ResponseWriter, r *http.Request) {
 	//validate if this is a URL we should provide a signed token for
 	URLComponents := strings.Split(site, ".")
 	numComponents := len(URLComponents)
-	if URLComponents[numComponents-1] != "org" ||
+	if URLComponents[numComponents-1] != "org" || URLComponents[numComponents-1] != "dev" ||
 		(URLComponents[numComponents-2] != "freemomhugs" &&
 			URLComponents[numComponents-2] != "https://freemomhugs") {
 		w.WriteHeader(http.StatusUnauthorized)
